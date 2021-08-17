@@ -1,8 +1,7 @@
+import exceptions.IncorrectFileNameException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 public class ReaderTest {
 
@@ -17,12 +16,15 @@ public class ReaderTest {
         Assertions.assertNotNull(lastUserFromFile);
         Assertions.assertEquals( "Иван", lastUserFromFile.getFirstname());
         Assertions.assertEquals( "Сычев", lastUserFromFile.getSurname());
-        Assertions.assertEquals( "8945 344578", lastUserFromFile.getPassport());
+        Assertions.assertEquals( "8945", lastUserFromFile.getPassport().getSeries().toString());
+        Assertions.assertEquals( "344578", lastUserFromFile.getPassport().getNumber().toString());
+        Assertions.assertEquals( "Спб", lastUserFromFile.getPassport().getLocation());
+
     }
 
     @Test
     public void testReaderFileNotFound() {
-        Assertions.assertThrows(IOException.class, () -> UserFileReader.readUsersList("wrong_name"));
+        Assertions.assertThrows(IncorrectFileNameException.class, () -> UserFileReader.readUsersList("wrong_name"));
     }
 
     @SneakyThrows
@@ -36,7 +38,6 @@ public class ReaderTest {
         Assertions.assertNotNull(lastUserFromFile);
         Assertions.assertEquals( "Иван", lastUserFromFile.getFirstname());
         Assertions.assertEquals( "Сычев", lastUserFromFile.getSurname());
-        Assertions.assertEquals( "8945 344578", lastUserFromFile.getPassport());
         Assertions.assertEquals( null, lastUserFromFile.getAge());
     }
 

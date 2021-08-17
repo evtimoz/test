@@ -1,3 +1,5 @@
+import exceptions.IncorrectFileNameException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -8,7 +10,9 @@ import java.util.List;
 
 public class UserFileReader {
 
-    public static List<User> readUsersList(String fileName) throws IOException {
+    final static String DEFAULT_FILE_NAME = "users.txt";
+
+    public static List<User> readUsersList(String fileName) throws IncorrectFileNameException {
 
         List<User> users = new ArrayList<>();
         User newUser = new User();
@@ -31,7 +35,7 @@ public class UserFileReader {
                         newUser.setAge(line);
                         break;
                     case 4:
-                        newUser.setPassport(line);
+                        newUser.addPassport(line);
                         break;
                 }
 
@@ -42,6 +46,10 @@ public class UserFileReader {
                     users.add(newUser);
                     newUser = new User();
                 }
+            }
+        } catch (IOException e) {
+            if (!fileName.equals(DEFAULT_FILE_NAME)) {
+                throw new IncorrectFileNameException("Incorrect filename : " + fileName);
             }
         }
 

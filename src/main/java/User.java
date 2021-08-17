@@ -1,3 +1,4 @@
+import exceptions.IncorrectPassportDataException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -7,7 +8,6 @@ import java.util.UUID;
 
 @ToString
 @Data
-@RequiredArgsConstructor
 @Slf4j
 public class User {
 
@@ -17,7 +17,51 @@ public class User {
     private String firstname;
     private String middlename;
     private Integer age;
-    private String passport;
+    private Passport passport;
+
+    void addPassport(String passportInfo) {
+        this.passport = new Passport(passportInfo, this);
+    }
+
+    @ToString
+    @Data
+    public static class Passport {
+        private Integer series;
+        private Integer number;
+        private String location;
+
+        final int DEFAULT_PASSPORT_SERIES_LENGTH = 4;
+        final int DEFAULT_PASSPORT_NUMBER_LENGTH = 6;
+
+        public Passport(String passport, User user) {
+            String[] info = passport.split(" ");
+            if (info.length != 3) {
+                log.error("Invalid passport info for user with UUID" + user.uuid);
+                return;
+            }
+            try {
+                this.series = getPassportSeries(info[0]);
+                this.number = getPassportNumber(info[1]);
+                this.location = info[2];
+            } catch (NumberFormatException e) {
+                log.error("Invalid serial/number format for user passport with UUID" + user.uuid);
+            }
+        }
+
+        Integer getPassportSeries(String series) throws NumberFormatException {
+            if (series.length() != DEFAULT_PASSPORT_SERIES_LENGTH ) {
+                throw new IncorrectPassportDataException("");
+            }
+            return Integer.parseInt(series);
+        }
+
+        Integer getPassportNumber(String number) throws NumberFormatException {
+            if (number.length() != DEFAULT_PASSPORT_NUMBER_LENGTH ) {
+                throw new IncorrectPassportDataException("");
+            }
+            return Integer.parseInt(number);
+        }
+    }
 
     @ToString.Exclude
     static final int FIELDS_COUNT = 5;
