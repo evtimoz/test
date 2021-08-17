@@ -8,45 +8,41 @@ import java.util.List;
 
 public class UserFileReader {
 
-    public static List<User> readUsersList(String fileName) {
+    public static List<User> readUsersList(String fileName) throws IOException {
 
         List<User> users = new ArrayList<>();
+        User newUser = new User();
 
         int lineIdx = 0;
-        String surname = "";
-        String name = "";
-        String middleName = "";
-        Integer age = null;
-        String passport = "";
 
         try (BufferedReader br = Files.newBufferedReader(Paths.get(fileName), StandardCharsets.UTF_8)) {
-            for (String line = null; (line = br.readLine()) != null;) {
-                    switch (lineIdx) {
-                        case 0:
-                            surname = line;
-                            break;
-                        case 1:
-                            name = line;
-                            break;
-                        case 2:
-                            middleName = line;
-                            break;
-                        case 3:
-                            age = Integer.parseInt(line);  // TODO: exception
-                            break;
-                        case 4:
-                            passport = line;
-                            break;
-                    }
-                    lineIdx++;
-
-                    if (lineIdx == 5) {
-                        lineIdx = 0;
-                        users.add(new User(surname, name, middleName, age, passport));
-                    }
+            for (String line; (line = br.readLine()) != null; ) {
+                switch (lineIdx) {
+                    case 0:
+                        newUser.setSurname(line);
+                        break;
+                    case 1:
+                        newUser.setFirstname(line);
+                        break;
+                    case 2:
+                        newUser.setMiddlename(line);
+                        break;
+                    case 3:
+                        newUser.setAge(line);
+                        break;
+                    case 4:
+                        newUser.setPassport(line);
+                        break;
                 }
-        } catch (IOException e) {
-            System.out.println("Ошибка при чтении из файла: " + e);
+
+                lineIdx++;
+
+                if (lineIdx == User.FIELDS_COUNT) {
+                    lineIdx = 0;
+                    users.add(newUser);
+                    newUser = new User();
+                }
+            }
         }
 
         return users;

@@ -1,8 +1,12 @@
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 public class ReaderTest {
 
+    @SneakyThrows
     @Test
     public void testReader() {
         User lastUserFromFile = null;
@@ -11,9 +15,19 @@ public class ReaderTest {
             lastUserFromFile = user;
         }
         Assertions.assertNotNull(lastUserFromFile);
-        Assertions.assertEquals(lastUserFromFile.getName(), "Иван");
-        Assertions.assertEquals(lastUserFromFile.getSurname(), "Сычев");
-        Assertions.assertEquals(lastUserFromFile.getPassport(), "8945 344578");
+        Assertions.assertEquals( "Иван", lastUserFromFile.getFirstname());
+        Assertions.assertEquals( "Сычев", lastUserFromFile.getSurname());
+        Assertions.assertEquals( "8945 344578", lastUserFromFile.getPassport());
+    }
+
+    @Test
+    public void testReaderFileNotFound() {
+        Assertions.assertThrows(IOException.class, () -> UserFileReader.readUsersList("wrong_name"));
+    }
+
+    @Test
+    public void testReaderInvalidData() {
+        Assertions.assertThrows(NumberFormatException.class, () -> UserFileReader.readUsersList("users_invalid_data.txt"));
     }
 
 }

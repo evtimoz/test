@@ -1,70 +1,33 @@
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.UUID;
+
+@ToString
+@Data
+@RequiredArgsConstructor
+@Slf4j
 public class User {
 
+    @ToString.Exclude
+    private UUID uuid = UUID.randomUUID();
     private String surname;
-    private String name;
-    private String middleName;
+    private String firstname;
+    private String middlename;
     private Integer age;
     private String passport;
 
-    @Override
-    public String toString() {
-        return "User{" +
-               "surname='" + surname + '\'' +
-               ", name='" + name + '\'' +
-               ", middleName='" + middleName + '\'' +
-               ", age=" + age +
-               ", passport='" + passport + '\'' +
-               ", FIELDS_COUNT=" + FIELDS_COUNT +
-               '}';
+    @ToString.Exclude
+    static final int FIELDS_COUNT = 5;
+
+    public void setAge(final String age) {
+        try {
+            this.age = Integer.parseInt(age);
+        } catch (NumberFormatException e) {
+            log.error("Invalid age for user with UUID" + this.uuid);
+        }
     }
 
-    final int FIELDS_COUNT = 5;
-
-    public User(final String surname, final String name, final String middleName, final Integer age, final String passport) {
-        this.surname = surname;
-        this.name = name;
-        this.middleName = middleName;
-        this.age = age;
-        this.passport = passport;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(final String surname) {
-        this.surname = surname;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(final String middleName) {
-        this.middleName = middleName;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(final Integer age) {
-        this.age = age;
-    }
-
-    public String getPassport() {
-        return passport;
-    }
-
-    public void setPassport(final String passport) {
-        this.passport = passport;
-    }
 }
