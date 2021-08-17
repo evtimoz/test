@@ -6,7 +6,7 @@ public class ReaderTest {
     @Test
     public void testReader() {
         User lastUserFromFile = null;
-        for (User user : FileReader.readUsersList("users.txt")) {
+        for (User user : UserFileReader.readUsersList("users.txt")) {
             System.out.println(user);
             lastUserFromFile = user;
         }
