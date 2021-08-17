@@ -30,7 +30,9 @@ public class User {
         private Integer number;
         private String location;
 
+        @ToString.Exclude
         final int DEFAULT_PASSPORT_SERIES_LENGTH = 4;
+        @ToString.Exclude
         final int DEFAULT_PASSPORT_NUMBER_LENGTH = 6;
 
         public Passport(String passport, User user) {

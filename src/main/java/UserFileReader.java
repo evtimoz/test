@@ -11,49 +11,60 @@ import java.util.List;
 public class UserFileReader {
 
     final static String DEFAULT_FILE_NAME = "users.txt";
+    static List<User> users = new ArrayList<>();
+    static User newUser = new User();
+    static int lineIdx = 0;
 
-    public static List<User> readUsersList(String fileName) throws IncorrectFileNameException {
+    public static List<User> readUsersList(String fileName, ReaderType readerType) throws IncorrectFileNameException {
 
-        List<User> users = new ArrayList<>();
-        User newUser = new User();
-
-        int lineIdx = 0;
-
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(fileName), StandardCharsets.UTF_8)) {
-            for (String line; (line = br.readLine()) != null; ) {
-                switch (lineIdx) {
-                    case 0:
-                        newUser.setSurname(line);
-                        break;
-                    case 1:
-                        newUser.setFirstname(line);
-                        break;
-                    case 2:
-                        newUser.setMiddlename(line);
-                        break;
-                    case 3:
-                        newUser.setAge(line);
-                        break;
-                    case 4:
-                        newUser.addPassport(line);
-                        break;
+        switch(readerType) {
+            case BYTE_BUFFER:
+            try (BufferedReader br = Files.newBufferedReader(Paths.get(fileName), StandardCharsets.UTF_8)) {
+                for (String line; (line = br.readLine()) != null; ) {
+                    readUserInfoFromLine(line);
                 }
-
-                lineIdx++;
-
-                if (lineIdx == User.FIELDS_COUNT) {
-                    lineIdx = 0;
-                    users.add(newUser);
-                    newUser = new User();
+            } catch (IOException e) {
+                if (!fileName.equals(DEFAULT_FILE_NAME)) {
+                    throw new IncorrectFileNameException("Incorrect filename : " + fileName);
                 }
             }
-        } catch (IOException e) {
-            if (!fileName.equals(DEFAULT_FILE_NAME)) {
-                throw new IncorrectFileNameException("Incorrect filename : " + fileName);
-            }
+            break;
+            case SEEKABLE_BYTE_CHANNEL:
+            break;
+            case SCANNER:
+            break;
+
         }
 
         return users;
+    }
+
+    public static void readUserInfoFromLine( String line) {
+        switch (lineIdx) {
+            case 0:
+                newUser.setSurname(line);
+                break;
+            case 1:
+                newUser.setFirstname(line);
+                break;
+            case 2:
+                newUser.setMiddlename(line);
+                break;
+            case 3:
+                newUser.setAge(line);
+                break;
+            case 4:
+                newUser.addPassport(line);
+                break;
+        }
+
+        lineIdx++;
+
+        if (lineIdx == User.FIELDS_COUNT) {
+            lineIdx = 0;
+            users.add(newUser);
+            newUser = new User();
+        }
     }
 
 }

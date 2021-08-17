@@ -1,0 +1,3 @@
+public enum ReaderType {
+    BYTE_BUFFER, SEEKABLE_BYTE_CHANNEL, SCANNER
+}
