@@ -25,9 +25,19 @@ public class ReaderTest {
         Assertions.assertThrows(IOException.class, () -> UserFileReader.readUsersList("wrong_name"));
     }
 
+    @SneakyThrows
     @Test
     public void testReaderInvalidData() {
-        Assertions.assertThrows(NumberFormatException.class, () -> UserFileReader.readUsersList("users_invalid_data.txt"));
+        User lastUserFromFile = null;
+        for (User user : UserFileReader.readUsersList("users_invalid_data.txt")) {
+            System.out.println(user);
+            lastUserFromFile = user;
+        }
+        Assertions.assertNotNull(lastUserFromFile);
+        Assertions.assertEquals( "Иван", lastUserFromFile.getFirstname());
+        Assertions.assertEquals( "Сычев", lastUserFromFile.getSurname());
+        Assertions.assertEquals( "8945 344578", lastUserFromFile.getPassport());
+        Assertions.assertEquals( null, lastUserFromFile.getAge());
     }
 
 }
