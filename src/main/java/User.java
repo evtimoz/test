@@ -25,6 +25,7 @@ public class User {
         this.name = name;
         this.middleName = middleName;
         this.age = age;
+        this.passport = passport;
     }
 
     public String getSurname() {
